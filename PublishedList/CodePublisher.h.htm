@@ -1,0 +1,125 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "CodePublisher.h.htm">CodePublisher.h - CodePublisher.h.htm</a><br><a href = "Convert.cpp.htm">Convert.cpp - Convert.cpp.htm</a><br><a href = "FileSystem.h.htm">FileSystem.h - FileSystem.h.htm</a><br><a href = "NoSqlDatabaseApp.h.htm">NoSqlDatabaseApp.h - NoSqlDatabaseApp.h.htm</a><br><a href = "Utilities.h.htm">Utilities.h - Utilities.h.htm</a><br><br><br>#pragma once
+/////////////////////////////////////////////////////////////////////
+//	CSE 687 Project 3-  Dependency based CodePublisher			   //
+//  CodePublisher.h -  Class to generate htm pages                 //
+//  ver 1.0                                                        //
+//  Language:      Visual C++ 2008, SP1                            //
+//  Platform:      Macbook Pro, Windows 10   			           //
+//  Application:   CodeAnalyzerEx                                  //
+//  Author:        Rajesh Ramesh  SUID:416867192         		   //
+/////////////////////////////////////////////////////////////////////
+/*
+Module Operations:
+==================
+This module defines a publisher class
+whose functions is to generate htm pages containing links to dependent packages and contains buttons 
+
+Public Interface:
+=================
+Publisher class- Generates HTM pages consisting of dependencies of packages
+
+Build Process:
+==============
+Required files
+-TypeTable
+-Utilities
+-Publisher
+
+Maintenance History:
+====================
+ver 1.0 : 07 Apr 17
+- first release
+*/
+
+#include&lt;fstream&gt;
+#include&lt;iostream&gt;
+#include&lt;vector&gt;
+#include &lt;unordered_map&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;ctime&gt;
+#include "../Tokenizer/Tokenizer.h"
+#include "../NoSqlDataBaseApp/NoSqlDatabaseApp.h"
+#include "../TypeTable/TypeTable.h"
+#include "../Utilities/Utilities.h"
+#include "../CodePublisher/CodePublisher.h"
+
+using Key = std::string;
+using Keys = std::vector&lt;std::string&gt;;
+using File = std::string;
+using Files = std::vector&lt;File&gt;;
+using Pattern = std::string;
+using Ext = std::string;
+using FileMap = std::unordered_map&lt;Pattern, Files&gt;;
+using Helper = Utilities::StringHelper;
+
+//Class CodePublisher - Class that contains functions to generate htm pages that contain dependencies
+class CodePublisher
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1">
+public:
+	void publish(File file, ElementItem elem, std::ofstream& ofjs);
+	void getfile(ElementItem elem, std::ofstream& out);
+}</div>;
+//Function to generate htm pages
+void CodePublisher::publish(File file1, ElementItem elem, std::ofstream& ofjs)
+{<button onclick = "myFunc2()">+</button><div id = "mydiv2">   std::string path = FileSystem::Path::getPath(file1);
+	std::string file = FileSystem::Path::getName(file1);
+	File filepub = "../PublishedList/"+file + ".htm";
+	std::ofstream out(filepub);
+	std::ifstream in(file1);
+	if (!in.is_open())
+	{<button onclick = "myFunc3()">+</button><div id = "mydiv3">
+		std::cout &lt;&lt; "Failed - unable to open file";
+	}</div>
+	else
+	{<button onclick = "myFunc4()">+</button><div id = "mydiv4">	out &lt;&lt; "&lt;html&gt;&lt;head&gt; &lt;link rel = \"" &lt;&lt; "stylesheet\"" &lt;&lt; " type = \"text/css\"" &lt;&lt; "  href=\"" &lt;&lt; "cssstyle.css\"/&gt;&lt;/head&gt;&lt;body&gt;";
+	    out &lt;&lt; "&lt;head&gt;&lt;script type=\"text/javascript\" src = \"jsscript.js\"&gt;&lt;/script&gt;&lt;/head&gt;";
+		char c;
+		out &lt;&lt; "&lt;pre&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;";
+		getfile(elem, out);
+		out &lt;&lt; "&lt;br&gt;&lt;br&gt;";
+		int counter = 1;
+		while (in.get(c))
+		{<button onclick = "myFunc5()">+</button><div id = "mydiv5">   if (in.eof())
+				break;
+			else if (c == '&lt;')
+				out &lt;&lt; "&lt;";
+			else if (c == '&gt;')
+				out &lt;&lt; "&gt;";
+			else if (c == '}</div>')
+			{<button onclick = "myFunc6()">+</button><div id = "mydiv6">
+				out &lt;&lt; "}</div>";
+				out &lt;&lt; "&lt;/div&gt;";
+			}</div>
+			else if (c == '{<button onclick = "myFunc7()">+</button><div id = "mydiv7">')
+			{<button onclick = "myFunc8()">+</button><div id = "mydiv8">   out &lt;&lt; "{<button onclick = "myFunc9()">+</button><div id = "mydiv9">";
+				out &lt;&lt; "&lt;button onclick = \"myFunc" &lt;&lt; counter &lt;&lt; "()\"&gt;+&lt;/button&gt;";
+				out &lt;&lt; "&lt;div id = \"mydiv" &lt;&lt; counter &lt;&lt; "\"&gt;";
+				ofjs &lt;&lt; "function myFunc" &lt;&lt; counter &lt;&lt; "() {<button onclick = "myFunc10()">+</button><div id = "mydiv10">var x = document.getElementById('mydiv" &lt;&lt; counter &lt;&lt; "');if(x.style.display == 'none') {<button onclick = "myFunc11()">+</button><div id = "mydiv11">x.style.display = 'block';}</div>else {<button onclick = "myFunc12()">+</button><div id = "mydiv12">x.style.display = 'none';}</div>}</div> \n";
+				counter++;
+			}</div>
+			else out &lt;&lt; c;
+		}</div>
+		out &lt;&lt; "\n&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;";
+		in.close();
+		out.close();
+		return;
+	}</div>}</div>
+
+//Function to print dependencies
+void CodePublisher:: getfile(ElementItem elem, std::ofstream& out)
+{<button onclick = "myFunc13()">+</button><div id = "mydiv13">
+	for (File filename : elem.childrenList)
+	{<button onclick = "myFunc14()">+</button><div id = "mydiv14">
+		std::string half = FileSystem::Path::getPath(filename);
+		std::string fname = FileSystem::Path::getName(filename);
+		std::string endpath = fname + ".htm";
+		out &lt;&lt; "&lt;a href = \""; out &lt;&lt; endpath; out &lt;&lt; "\"";
+		out &lt;&lt; "&gt;"; out &lt;&lt; fname; out &lt;&lt; " - "; out &lt;&lt; endpath;
+		out &lt;&lt; "&lt;/a&gt;&lt;br&gt;";
+	}</div>
+}</div>
+</pre></body></html>

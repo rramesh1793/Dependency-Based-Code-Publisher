@@ -1,0 +1,138 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "CodePublisher.h.htm">CodePublisher.h - CodePublisher.h.htm</a><br><a href = "Dependency.h.htm">Dependency.h - Dependency.h.htm</a><br><a href = "FileSystem.h.htm">FileSystem.h - FileSystem.h.htm</a><br><a href = "NoSqlDatabaseApp.h.htm">NoSqlDatabaseApp.h - NoSqlDatabaseApp.h.htm</a><br><a href = "Tokenizer.h.htm">Tokenizer.h - Tokenizer.h.htm</a><br><a href = "TypeTable.h.htm">TypeTable.h - TypeTable.h.htm</a><br><br><br>
+#pragma once
+/////////////////////////////////////////////////////////////////////
+//	CSE 687 Project 3-  Dependency based CodePublisher			   //
+//  Dependency.h -  Class analysing dependencies between Files     //
+//  ver 1.0                                                        //
+//  Language:      Visual C++ 2008, SP1                            //
+//  Platform:      Macbook Pro, Windows 10   			           //
+//  Application:   CodeAnalyzerEx                                  //
+//  Author:        Rajesh Ramesh  SUID:416867192         		   //
+/////////////////////////////////////////////////////////////////////
+/*
+Module Operations:
+==================
+This module defines a control class class
+whose functions match the type table keys and find out dependencies
+
+Public Interface:
+=================
+doActivity -obtains and stores dependencies between files
+
+Build Process:
+==============
+Required files
+-TypeTable
+-CppProperties
+-Utilities
+-Tokenizer
+-NoSqlDatabaseApp
+
+Maintenance History:
+====================
+ver 1.0 : 15 Mar 17
+- first release
+updated 
+ver 2.0 : 07 Apr 17
+*/
+
+#include &lt;unordered_map&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;iostream&gt;
+#include &lt;ctime&gt;
+#include "../CppProperties/CppProperties.h"
+#include "../Tokenizer/Tokenizer.h"
+#include "../TypeTable/TypeTable.h"
+#include "../Utilities/Utilities.h"
+#include "../NoSqlDatabaseApp/NoSqlDatabaseApp.h"
+#include "../CodePublisher/CodePublisher.h"
+
+using Key = std::string;
+using Keys = std::vector&lt;Key&gt;;
+using File = std::string;
+using Files = std::vector&lt;File&gt;;
+using Pattern = std::string;
+using Ext = std::string;
+using FileMap = std::unordered_map&lt;Pattern, Files&gt;;
+
+
+namespace CodeAnalysis
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1">
+	class control // represents control flow to obtain the dependency
+	{<button onclick = "myFunc2()">+</button><div id = "mydiv2">
+	public:
+		int doActivity(NoSqlDatabaseApp& db, Dependency& dbnew, Files allfiles);
+	}</div>;
+	int control::doActivity(NoSqlDatabaseApp& db, Dependency& dbnew, Files allfiles)
+	{<button onclick = "myFunc3()">+</button><div id = "mydiv3">
+
+		CodePublisher p;
+
+		Keys keys = db.keys1();
+		std::vector&lt;ElementItem&gt; veci;
+		for (File fiall : allfiles)
+		{<button onclick = "myFunc4()">+</button><div id = "mydiv4">
+			ElementItem elitdep;
+
+			try
+			{<button onclick = "myFunc5()">+</button><div id = "mydiv5">
+				std::string file = FileSystem::Path::getName(fiall);
+				std::ifstream in(fiall);
+				if (!in.good())
+				{<button onclick = "myFunc6()">+</button><div id = "mydiv6">
+					std::cout &lt;&lt; "\n  unable to open " &lt;&lt; file &lt;&lt; "\n\n";
+					return 1;
+				}</div>
+				Scanner::Toker toker;
+				toker.returnComments(false);
+				toker.attach(&in);
+				do
+				{<button onclick = "myFunc7()">+</button><div id = "mydiv7">
+					std::string token = toker.getTok();
+					for (std::string key : keys)
+					{<button onclick = "myFunc8()">+</button><div id = "mydiv8">
+						if (key == token)
+						{<button onclick = "myFunc9()">+</button><div id = "mydiv9">
+							for (Element veckdep : db.value(key))
+							{<button onclick = "myFunc10()">+</button><div id = "mydiv10">
+								elitdep.childrenList.push_back(veckdep.filename);
+								std::sort(elitdep.childrenList.begin(), elitdep.childrenList.end());
+								elitdep.childrenList.erase(std::unique(elitdep.childrenList.begin(), elitdep.childrenList.end()), elitdep.childrenList.end());
+							}</div>
+
+						}</div>
+					}</div>
+
+
+				}</div> while (in.good());
+
+				dbnew.save(fiall, elitdep);
+
+				
+
+			}</div>
+			catch (std::logic_error& excepti)
+			{<button onclick = "myFunc11()">+</button><div id = "mydiv11">
+				std::cout &lt;&lt; "\n  " &lt;&lt; excepti.what();
+			}</div>
+		}</div>
+
+
+		return 0;
+	}</div>
+}</div>
+
+
+
+
+
+
+
+
+
+
+
+</pre></body></html>

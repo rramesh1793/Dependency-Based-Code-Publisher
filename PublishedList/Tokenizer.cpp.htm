@@ -1,0 +1,393 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "Convert.cpp.htm">Convert.cpp - Convert.cpp.htm</a><br><a href = "Tokenizer.h.htm">Tokenizer.h - Tokenizer.h.htm</a><br><br><br>/////////////////////////////////////////////////////////////////////
+//  Tokenizer.cpp - Reads words from a file                        //
+//  ver 1.9                                                        //
+//                                                                 //
+//  Language:      Visual C++ 2008, SP1                            //
+//  Platform:      Dell Precision T7400, Vista Ultimate SP1        //
+//  Application:   Prototype for CSE687 Pr1, Sp09                  //
+//  Author:        Jim Fawcett, CST 4-187, Syracuse University     //
+//                 (315) 443-3948, jfawcett@twcny.rr.com           //
+/////////////////////////////////////////////////////////////////////
+
+#include &lt;cctype&gt;
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;iomanip&gt;
+#include &lt;assert.h&gt;
+#include "Tokenizer.h"
+
+//----&lt; constructor may be called with no argument &gt;-----------
+
+Toker::Toker(const std::string& src, bool isFile) 
+     : prevprevChar(0), prevChar(0), currChar(0), nextChar(0),
+       doReturnComments(false), numLines(0), braceCount(0), pIn(0),
+       _state(default_state)
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1">
+  if(src.length() &gt; 0)
+  {<button onclick = "myFunc2()">+</button><div id = "mydiv2">
+    if(!attach(src, isFile))
+    {<button onclick = "myFunc3()">+</button><div id = "mydiv3">
+      std::string temp = std::string("can't open ") + src;
+      throw std::exception(temp.c_str());
+    }</div>
+  }</div>
+  scTok = "()[]{<button onclick = "myFunc4()">+</button><div id = "mydiv4">}</div>;.\n";
+  if(_mode == xml)
+    scTok = "&lt;&gt;!" + scTok;
+}</div>
+//----&lt; destructor &gt;-------------------------------------------
+
+Toker::~Toker()
+{<button onclick = "myFunc5()">+</button><div id = "mydiv5">
+  if(pIn)
+  {<button onclick = "myFunc6()">+</button><div id = "mydiv6">
+    pIn-&gt;clear();
+    std::ifstream* pFs = dynamic_cast&lt;std::ifstream*&gt;(pIn);
+    if(pFs)
+    {<button onclick = "myFunc7()">+</button><div id = "mydiv7">
+      pFs-&gt;close();
+    }</div>
+    delete pIn;
+  }</div>
+}</div>
+//----&lt; set mode of tokenizing, e.g., code or xml &gt;------------
+
+void Toker::setMode(Toker::mode md)
+{<button onclick = "myFunc8()">+</button><div id = "mydiv8"> 
+  _mode = md; 
+  scTok = "()[]{<button onclick = "myFunc9()">+</button><div id = "mydiv9">}</div>;.\n";
+  if(_mode == xml)
+    scTok = "&lt;&gt;!" + scTok;
+}</div>
+//----&lt; set mode of tokenizing, e.g., code or xml &gt;------------
+
+void Toker::setSingleCharTokens(std::string tokChars)
+{<button onclick = "myFunc10()">+</button><div id = "mydiv10"> 
+  _mode = custom; 
+  scTok = tokChars;
+}</div>
+//----&lt; attach tokenizer to a source file or string &gt;----------
+
+bool Toker::attach(const std::string& name, bool srcIsFile)
+{<button onclick = "myFunc11()">+</button><div id = "mydiv11">
+  if(pIn && srcIsFile)
+  {<button onclick = "myFunc12()">+</button><div id = "mydiv12">
+    pIn-&gt;clear();
+    std::ifstream* pFs = dynamic_cast&lt;std::ifstream*&gt;(pIn);
+    if(pFs)
+    {<button onclick = "myFunc13()">+</button><div id = "mydiv13">
+      pFs-&gt;close();
+    }</div>
+    delete pIn;
+  }</div>
+  if(srcIsFile)
+    pIn = new std::ifstream(name.c_str());
+  else
+    pIn = new std::istringstream(name.c_str());
+  return pIn-&gt;good();
+}</div>
+//----&lt; peek function that works with multiple putbacks &gt;------
+
+int Toker::peek()
+{<button onclick = "myFunc14()">+</button><div id = "mydiv14">
+  if(putbacks.size() &gt; 0)
+    return putbacks[putbacks.size()-1];
+  else
+    return pIn-&gt;peek();
+
+}</div>
+//----&lt; multiple putBack that won't break peek &gt;---------------
+
+void Toker::putback(int ch)
+{<button onclick = "myFunc15()">+</button><div id = "mydiv15">
+  putbacks.push_back(ch);
+  nextChar = ch;
+  currChar = prevChar;
+  prevChar = prevprevChar;
+}</div>
+//----&lt; get consistent with peek and putback &gt;-----------------
+
+int Toker::get()
+{<button onclick = "myFunc16()">+</button><div id = "mydiv16">
+  if(putbacks.size() &gt; 0)
+  {<button onclick = "myFunc17()">+</button><div id = "mydiv17">
+    char ch = putbacks.front();
+    putbacks.pop_back();
+    return ch;
+  }</div>
+  return pIn-&gt;get();
+}</div>
+//
+//----&lt; extract character from attached stream &gt;---------------
+
+bool Toker::getChar()
+{<button onclick = "myFunc18()">+</button><div id = "mydiv18">
+  char oldNext = nextChar;
+  prevprevChar = prevChar;
+  prevChar = currChar;
+  currChar = this-&gt;get();
+  nextChar = this-&gt;peek();
+  _ASSERT(currChar == oldNext || oldNext == 0);
+  if(currChar == '\n')
+    ++numLines;
+  if(currChar == '{<button onclick = "myFunc19()">+</button><div id = "mydiv19">' && _state == default_state)
+    ++braceCount;
+  if(currChar == '}</div>' && _state == default_state)
+    --braceCount;
+  return !pIn-&gt;eof();
+}</div>
+//----&lt; is this char a single char token? &gt;--------------------
+
+bool Toker::isSingleCharTok(char ch)
+{<button onclick = "myFunc20()">+</button><div id = "mydiv20">
+  if(scTok.find(ch) &lt; scTok.length())
+    return true;
+  return false;
+}</div>
+//----&lt; remove contiguous white space except for newline &gt;-----
+
+void Toker::stripWhiteSpace()
+{<button onclick = "myFunc21()">+</button><div id = "mydiv21">
+  if(nextChar == '\n')
+    return;
+  while(isspace(nextChar) && nextChar != '\n')
+  {<button onclick = "myFunc22()">+</button><div id = "mydiv22">
+    getChar();
+  }</div>
+}</div>
+//----&lt; is this an indentifier character? &gt;--------------------
+
+bool Toker::isIdentifierChar(char ch)
+{<button onclick = "myFunc23()">+</button><div id = "mydiv23">
+  if(isalpha(ch) || ch == '_' || isdigit(ch))
+    return true;
+  return false;
+}</div>
+//----&lt; is this the end of a token? &gt;--------------------------
+
+bool Toker::isTokEnd()
+{<button onclick = "myFunc24()">+</button><div id = "mydiv24">
+  if(isspace(nextChar))
+    return true;
+  if(isSingleCharTok(nextChar) || isSingleCharTok(currChar))
+    return true;
+  if(isIdentifierChar(currChar) && !isIdentifierChar(nextChar))
+    return true;
+  if(!isIdentifierChar(currChar) && isIdentifierChar(nextChar))
+    return true;
+  if(isFileEnd())
+    return true;
+  return false;
+}</div>
+//----&lt; is this the beginning of a comment? &gt;------------------
+
+bool Toker::isBeginComment()
+{<button onclick = "myFunc25()">+</button><div id = "mydiv25">
+  if(prevChar != '\\' && currChar == '/' && nextChar == '*')
+  {<button onclick = "myFunc26()">+</button><div id = "mydiv26">
+    aCppComment = false;
+    return true;
+  }</div>
+  if(prevChar != '\\' && currChar == '/' && nextChar == '/')
+  {<button onclick = "myFunc27()">+</button><div id = "mydiv27">
+    aCppComment = true;
+    return true;
+  }</div>
+  return false;
+}</div>
+//----&lt; is this the end of a comment? &gt;------------------------
+
+bool Toker::isEndComment()
+{<button onclick = "myFunc28()">+</button><div id = "mydiv28">
+  if(aCppComment && currChar != '\\' && nextChar == '\n')
+      return true;
+  if(!aCppComment && prevChar != '\\' && currChar == '*' && nextChar == '/')
+    return true;
+  return false;
+}</div>
+//----&lt; return comment as a token &gt;----------------------------
+
+std::string Toker::eatComment()
+{<button onclick = "myFunc29()">+</button><div id = "mydiv29">
+  _state = comment_state;
+  std::string tok(1,currChar);
+  while(!isEndComment() && pIn-&gt;good())
+  {<button onclick = "myFunc30()">+</button><div id = "mydiv30">
+    getChar();
+    tok.append(1,currChar);
+  }</div>
+
+  if(!aCppComment)
+  {<button onclick = "myFunc31()">+</button><div id = "mydiv31">
+    getChar();
+    tok.append(1,currChar);
+  }</div>
+  _state = default_state;
+  return tok;
+}</div>
+//----&lt; is this the beginning of a quote? &gt;--------------------
+
+bool Toker::isBeginQuote()
+{<button onclick = "myFunc32()">+</button><div id = "mydiv32">
+  if(prevChar != '\\' && currChar == '\'')
+  {<button onclick = "myFunc33()">+</button><div id = "mydiv33">
+    aSingleQuote = true;
+    return true;
+  }</div>
+  if(prevChar != '\\' && currChar == '\"')
+  {<button onclick = "myFunc34()">+</button><div id = "mydiv34">
+    aSingleQuote = false;
+    return true;
+  }</div>
+  return false;
+}</div>
+//----&lt; is this the end of quote? &gt;----------------------------
+
+bool Toker::isEndQuote()
+{<button onclick = "myFunc35()">+</button><div id = "mydiv35">
+  if(prevChar =='\\' || currChar != '\\')
+  {<button onclick = "myFunc36()">+</button><div id = "mydiv36">
+    if(aSingleQuote && nextChar == '\'')
+      return true;
+    if(!aSingleQuote && nextChar == '\"')
+      return true;
+  }</div>
+  return false;
+}</div>
+//----&lt; return single or double quote as token &gt;---------------
+
+std::string Toker::eatQuote()
+{<button onclick = "myFunc37()">+</button><div id = "mydiv37">
+  _state = quote_state;
+  std::string tok(1,currChar);
+  while(!isEndQuote())
+  {<button onclick = "myFunc38()">+</button><div id = "mydiv38">
+    if(!pIn-&gt;good())
+      throw std::exception("missing end of quote");
+    getChar();
+    tok.append(1,currChar);
+  }</div>
+  getChar();
+  tok.append(1,currChar);
+  _state = default_state;
+  return tok;
+}</div>
+//----&lt; read token from attached file &gt;------------------------
+
+std::string Toker::getTok()
+{<button onclick = "myFunc39()">+</button><div id = "mydiv39">
+  std::string tok = "";
+  stripWhiteSpace();
+  if(isSingleCharTok(nextChar))
+  {<button onclick = "myFunc40()">+</button><div id = "mydiv40">
+    getChar();
+    tok.append(1,currChar);
+    return tok;
+  }</div>
+  do
+  {<button onclick = "myFunc41()">+</button><div id = "mydiv41">
+    if(isFileEnd())
+      return tok;
+
+    getChar();
+    if(isBeginComment())
+    {<button onclick = "myFunc42()">+</button><div id = "mydiv42">
+      if(tok.length() &gt; 0)
+      {<button onclick = "myFunc43()">+</button><div id = "mydiv43">
+        this-&gt;putback(currChar);
+        return tok;
+      }</div>
+      tok = eatComment();
+      if(doReturnComments)
+        return tok;
+      else
+      {<button onclick = "myFunc44()">+</button><div id = "mydiv44">
+        tok = "";
+        continue;
+      }</div>
+    }</div>
+    if(isBeginQuote())
+    {<button onclick = "myFunc45()">+</button><div id = "mydiv45">
+      if(tok.length() &gt; 0)
+      {<button onclick = "myFunc46()">+</button><div id = "mydiv46">
+        this-&gt;putback(currChar);
+        return tok;
+      }</div>
+      tok = eatQuote();
+      return tok;
+    }</div>
+    if(!isspace(currChar))
+      tok.append(1,currChar);
+  }</div>  while(!isTokEnd() || tok.length() == 0);
+  return tok;
+}</div>
+//----&lt; test stub &gt;--------------------------------------------
+
+#ifdef TEST_TOKENIZER
+
+int main(int argc, char* argv[])
+{<button onclick = "myFunc47()">+</button><div id = "mydiv47">
+  std::cout &lt;&lt; "\n  Testing Tokenizer class\n "
+            &lt;&lt; std::string(25,'=') &lt;&lt; std::endl;
+  std::cout
+    &lt;&lt; "\n  Note that comments and quotes are returned as single tokens\n\n";
+
+  // collecting tokens from a string
+
+  Toker t_fromStr("tokens from a string: -&gt; int x; /* a comment */", false);
+  std::string tok;
+  do
+  {<button onclick = "myFunc48()">+</button><div id = "mydiv48">
+    tok = t_fromStr.getTok();
+    std::cout &lt;&lt; "  " &lt;&lt; tok;
+  }</div> while(tok != "");
+  std::cout &lt;&lt; "\n\n";
+
+  // collecting tokens from files, named on the command line
+
+  if(argc &lt; 2)
+  {<button onclick = "myFunc49()">+</button><div id = "mydiv49">
+    std::cout 
+      &lt;&lt; "\n  please enter name of file to process on command line\n\n";
+    return 1;
+  }</div>
+
+  for(int i=1; i&lt;argc; ++i)
+  {<button onclick = "myFunc50()">+</button><div id = "mydiv50">
+    std::cout &lt;&lt; "\n  Processing file " &lt;&lt; argv[i];
+    std::cout &lt;&lt; "\n  " &lt;&lt; std::string(16 + strlen(argv[i]),'-') &lt;&lt; "\n";
+
+    try
+    {<button onclick = "myFunc51()">+</button><div id = "mydiv51">
+      Toker t;
+      t.setMode(Toker::xml);        // comment out to show tokenizing for code
+//    t.setSingleCharTokens("&lt;&gt;");  // will return same results as above for XML
+
+      if(!t.attach(argv[i]))
+      {<button onclick = "myFunc52()">+</button><div id = "mydiv52">
+        std::cout &lt;&lt; "\n    can't open file " &lt;&lt; argv[i] &lt;&lt; "\n\n";
+        continue;
+      }</div>
+      t.returnComments();  // remove this statement to discard comment tokens
+      std::string temp;
+      do
+      {<button onclick = "myFunc53()">+</button><div id = "mydiv53">
+        temp = t.getTok();
+        std::cout &lt;&lt; "  ln: " &lt;&lt; t.lines() &lt;&lt; ", br lev: "
+          &lt;&lt; t.braceLevel() &lt;&lt; ", tok size: " &lt;&lt; std::setw(3) &lt;&lt; temp.length() &lt;&lt; " -- ";
+        if(temp != "\n")
+          std::cout &lt;&lt; temp &lt;&lt; std::endl;
+        else
+          std::cout &lt;&lt; "newline\n";
+      }</div> while(temp != "");
+    }</div>
+    catch(std::exception& ex)
+    {<button onclick = "myFunc54()">+</button><div id = "mydiv54">
+      std::cout &lt;&lt; "  " &lt;&lt; ex.what() &lt;&lt; "\n\n";
+    }</div>
+  }</div>
+}</div>
+
+#endif
+
+</pre></body></html>

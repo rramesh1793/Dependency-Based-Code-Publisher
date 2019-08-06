@@ -1,0 +1,112 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "Convert.cpp.htm">Convert.cpp - Convert.cpp.htm</a><br><a href = "StrongComponent.h.htm">StrongComponent.h - StrongComponent.h.htm</a><br><br><br>#pragma once
+/////////////////////////////////////////////////////////////////////
+//	CSE 687 Project 2- Type-based Depanal Analysis			   //
+//  Strong Component.h -  Analyses the Strong Components           //
+//  ver 1.0                                                        //
+//  Language:      Visual C++ 2008, SP1                            //
+//  Platform:      Macbook Pro, Windows 10   			           //
+//  Application:   CodeAnalyzerEx                                  //
+//  Author:        Rajesh Ramesh SUID:416867192          		   //
+/////////////////////////////////////////////////////////////////////
+
+/*
+Module Operations:
+==================
+A control class is defined in this module where 
+the functions defined in this control class match the Depanal keys
+to find out the strong components
+
+Public Interface:
+=================
+StrongComp;
+SCC;
+
+Maintenance History:
+====================
+ver 1.0 : 15 Mar 17
+- first release
+*/
+#include&lt;iostream&gt;
+#include &lt;list&gt;
+#include &lt;stack&gt;
+#include&lt;math.h&gt;
+#include&lt;algorithm&gt;
+#include&lt;vector&gt;
+#include &lt;unordered_map&gt;
+#define NIL -1
+using namespace std;
+
+/////////////////////////////////////////////////////////////////////
+// The graph class stores the Depanal files as a graph         //
+// and finds the strong Component class                          //
+// ///////////////////////////////////////////////////////////////
+class Graph
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1">
+	int V;    
+	list&lt;int&gt; *adj;    
+	void StrongComp(int u, int disc[], int low[],
+	stack&lt;int&gt; *st, bool stackMember[]);
+	std::vector&lt;std::vector&lt;int&gt;&gt; bigvec;
+public:
+	Graph(int V);   
+	void addEdge(int v, int w);   
+	std::vector&lt;std::vector&lt;int&gt;&gt;  SCC(); }</div>;
+
+Graph::Graph(int V)
+{<button onclick = "myFunc2()">+</button><div id = "mydiv2"> this-&gt;V = V;
+ adj = new list&lt;int&gt;[V];}</div>
+
+void Graph::addEdge(int v, int w)
+{<button onclick = "myFunc3()">+</button><div id = "mydiv3"> adj[v].push_back(w);}</div>
+
+////////////////////////////////////////////////
+//StrongComp stores the strong component values //
+//////////////////////////////////////////////
+void Graph::StrongComp(int u, int disc[], int low[], stack&lt;int&gt; *st,bool stackMember[])
+{<button onclick = "myFunc4()">+</button><div id = "mydiv4"> std::vector&lt;int&gt; vector;
+ static int time = 0;
+ disc[u] = low[u] = ++time;
+ st-&gt;push(u);
+ stackMember[u] = true;
+ list&lt;int&gt;::iterator it;
+ for (it = adj[u].begin(); it != adj[u].end(); ++it)
+{<button onclick = "myFunc5()">+</button><div id = "mydiv5"> int v = *it;  
+ if (disc[v] == -1)
+{<button onclick = "myFunc6()">+</button><div id = "mydiv6"> StrongComp(v, disc, low, st, stackMember);
+ low[u] = min(low[u], low[v]);}</div>
+else if (stackMember[v] == true)
+low[u] = min(low[u], disc[v]);}</div>
+int w = 0;  
+vector.erase(vector.begin(), vector.end());
+if (low[u] == disc[u])
+{<button onclick = "myFunc7()">+</button><div id = "mydiv7"> while (st-&gt;top() != u)
+{<button onclick = "myFunc8()">+</button><div id = "mydiv8"> w = (int)st-&gt;top();
+//cout &lt;&lt; w &lt;&lt; " ";
+vector.push_back(w);
+stackMember[w] = false;
+st-&gt;pop();}</div>
+w = (int)st-&gt;top();
+//cout &lt;&lt; w &lt;&lt; "\n";
+vector.push_back(w);
+stackMember[w] = false;
+st-&gt;pop();}</div>
+bigvec.push_back(vector);}</div>
+//Function to call SCC Utilities
+std::vector&lt;std::vector&lt;int&gt;&gt; Graph::SCC()
+{<button onclick = "myFunc9()">+</button><div id = "mydiv9">
+    int *disc = new int[V];
+	int *low = new int[V];
+	bool *stackMember = new bool[V];
+	stack&lt;int&gt; *st = new stack&lt;int&gt;();
+	for (int i = 0; i &lt; V; i++)
+	{<button onclick = "myFunc10()">+</button><div id = "mydiv10">   disc[i] = NIL;
+		low[i] = NIL;
+		stackMember[i] = false;}</div>
+	for (int i = 0; i &lt; V; i++)
+		if (disc[i] == NIL)
+		StrongComp(i, disc, low, st, stackMember);
+	return bigvec;
+}</div>
+
+
+</pre></body></html>

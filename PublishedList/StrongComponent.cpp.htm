@@ -1,0 +1,26 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "StrongComponent.h.htm">StrongComponent.h - StrongComponent.h.htm</a><br><br><br>//Implementation of StrongComponent.h
+
+#ifdef StrongComponent
+
+#include "StrongComponent.h"
+int main()
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1">	std::vector&lt;std::vector&lt;int&gt;&gt; revfileMap;
+	cout &lt;&lt; "\n Stronly connected components in first graph \n";
+	Graph g1(5);
+	g1.addEdge(1, 0);
+	g1.addEdge(0, 2);
+	g1.addEdge(2, 1);
+	g1.addEdge(0, 3);
+	g1.addEdge(3, 4);
+    revfileMap = g1.SCC();
+	cout &lt;&lt; "\n\n";
+    for (std::vector&lt;int&gt; r : revfileMap)
+	{<button onclick = "myFunc2()">+</button><div id = "mydiv2"> for (int a : r)
+	{<button onclick = "myFunc3()">+</button><div id = "mydiv3">cout &lt;&lt; " " &lt;&lt; a;}</div>
+	cout &lt;&lt; "\n";}</div>
+	return 0;}</div>
+
+#endif
+
+
+</pre></body></html>

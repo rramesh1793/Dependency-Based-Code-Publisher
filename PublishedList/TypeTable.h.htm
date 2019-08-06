@@ -1,0 +1,199 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "AbstrSynTree.h.htm">AbstrSynTree.h - AbstrSynTree.h.htm</a><br><a href = "ActionsAndRules.h.htm">ActionsAndRules.h - ActionsAndRules.h.htm</a><br><a href = "Convert.cpp.htm">Convert.cpp - Convert.cpp.htm</a><br><a href = "Cpp11-BlockingQueue.cpp.htm">Cpp11-BlockingQueue.cpp - Cpp11-BlockingQueue.cpp.htm</a><br><a href = "CppProperties.h.htm">CppProperties.h - CppProperties.h.htm</a><br><a href = "FileSystem.h.htm">FileSystem.h - FileSystem.h.htm</a><br><a href = "ScopeStack.h.htm">ScopeStack.h - ScopeStack.h.htm</a><br><a href = "Tokenizer.h.htm">Tokenizer.h - Tokenizer.h.htm</a><br><a href = "TypeTable.h.htm">TypeTable.h - TypeTable.h.htm</a><br><br><br>﻿#pragma once
+/////////////////////////////////////////////////////////////////////
+//  CSE 687 Project 3-  Dependency based CodePublisher              //
+//  TypeTable.h -  Type Analysis and typletable design             //
+//  ver 1.0                                                        //                                                            //
+//  Language:      Visual C++ 2008, SP1                            //
+//  Platform:      MacbookPro, Windows 10    			           //
+//  Application:   CodeAnalyzerEx                                  //
+//  Author:        Rajesh Ramesh            SUID:416867192		   //
+/////////////////////////////////////////////////////////////////////
+
+/*
+Module Operations:
+==================
+This module defines 2 classes TypeAnalysis class and Element class
+--&gt; TypeAnalysis class is a key/value pair in-memory database        
+Its function is to store and retrieve elements from the AST Node
+-The functions defined in this class are used for Type Analysis and buidling a typetable
+----------------------------------------------------------------
+--&gt; Class Element corressponds to a data record in the NoSql database  
+* filename,typename,using namespace are required to be stored    
+Public Interface:
+=================
+doActivity
+Build Process:
+==============
+Required files
+-Parser
+-CppProperties
+-Tokenizer
+Maintenance History:
+====================
+ver 1.0 : 15 Mar 17
+- first release
+*/
+
+#include &lt;unordered_map&gt;
+#include &lt;string&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;iomanip&gt;
+#include &lt;functional&gt;
+#include&lt;stack&gt;
+#include &lt;iostream&gt;
+#include "../CppProperties/CppProperties.h"
+#include "../Parser/ActionsAndRules.h"
+#include "../Logger/Logger.h"
+#include &lt;iostream&gt;
+
+#pragma warning (disable : 4101)  // disable warning re unused variable x, below
+namespace CodeAnalysis
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1"> class Element
+	{<button onclick = "myFunc2()">+</button><div id = "mydiv2">
+	public:
+		using Type = std::string;
+		using Namespace = std::string;
+		using Filename = std::string;
+		//////////////////////////////////////////////
+		//Type, Namespace and Filename are Metadata//
+		////////////////////////////////////////////
+		Property&lt;Type&gt; type_name;         
+		Property&lt;Namespace&gt; name_space;   
+		Property&lt;Filename&gt; filename;    
+		std::string showchildren(); //// Displays the children
+	}</div>;
+
+
+	std::string Element::showchildren()
+	{<button onclick = "myFunc3()">+</button><div id = "mydiv3">
+		std::ostringstream out;
+		out.setf(std::ios::adjustfield, std::ios::left);
+		out &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; "Type Name"&lt;&lt;"\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; type_name &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; "_*-*-*-_*-*-*-_*-*-*-" &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; "Using NameSpace" &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; name_space &lt;&lt; "\n"; 
+	    out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; "_*-*-*-_*-*-*-_*-*-*-" &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; "File Name" &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; filename &lt;&lt; "\n";
+		out &lt;&lt; "    " &lt;&lt; std::setw(10) &lt;&lt; "_*-*-*-_*-*-*-_*-*-*-" &lt;&lt; "\n\n";
+		return out.str();
+	}</div>
+	class NoSqlDatabaseApp
+	{<button onclick = "myFunc4()">+</button><div id = "mydiv4">
+	public:
+		using Key = std::string;
+		using Keys = std::vector&lt;Key&gt;;
+		bool saveele(Key key, Element elem); //saveele() - saves the new element to the Database
+		std::vector&lt;Element&gt; NoSqlDatabaseApp::value(Key key); //value(Key key) - Returns the Element of a certain key in the Database 
+		Keys keys1(); //keys1() - function to return the keys of the DataBase
+		void NoSqlDatabaseApp::keydisp(Keys list); //keydisp()-Displays all keys in the Database
+		size_t count(); //count() - Returns count of the DataBase
+	private:
+		using Item = std::pair&lt;Key, std::vector&lt;Element&gt;&gt;;
+		std::unordered_map&lt;Key, std::vector&lt;Element&gt;&gt; store;
+	}</div>;
+
+
+	std::vector&lt;Element&gt; NoSqlDatabaseApp::value(Key key)
+	{<button onclick = "myFunc5()">+</button><div id = "mydiv5">
+		std::vector&lt;Element&gt; vect;
+		if (store.find(key) == store.end())
+		{<button onclick = "myFunc6()">+</button><div id = "mydiv6">	return vect;}</div>
+		return store[key];}</div>
+
+	bool NoSqlDatabaseApp::saveele(Key key, Element elem)
+	{<button onclick = "myFunc7()">+</button><div id = "mydiv7">  std::vector&lt;Element&gt; vec;
+		vec.push_back(elem);
+		if (store.find(key) != store.end())
+			return false;
+		store[key] = vec;
+		return true;}</div>
+
+	
+	typename NoSqlDatabaseApp::Keys NoSqlDatabaseApp::keys1()
+	{<button onclick = "myFunc8()">+</button><div id = "mydiv8">   Keys keysdb;
+		for (Item itval : store)
+		{<button onclick = "myFunc9()">+</button><div id = "mydiv9"> keysdb.push_back(itval.first); }</div>
+		return keysdb; }</div>
+
+	size_t NoSqlDatabaseApp::count()
+	{<button onclick = "myFunc10()">+</button><div id = "mydiv10">return store.size();}</div>
+	void NoSqlDatabaseApp::keydisp(Keys list)
+	{<button onclick = "myFunc11()">+</button><div id = "mydiv11">   for (Key k : list)
+		{<button onclick = "myFunc12()">+</button><div id = "mydiv12">std::cout &lt;&lt; "\t" &lt;&lt; k &lt;&lt; "\n";}</div>
+		return;}</div>
+	class TypeAnalysis
+	{<button onclick = "myFunc13()">+</button><div id = "mydiv13">
+	public:
+		using SPtr = std::shared_ptr&lt;ASTNode*&gt;;
+		std::stack&lt;std::string&gt; stack;
+		TypeAnalysis();
+		void doTypeAnalysis(NoSqlDatabaseApp& db);
+	private:
+		void dfs(ASTNode* pNode, NoSqlDatabaseApp& db);
+		AbstrSynTree& ASTref_;
+		ScopeStack&lt;ASTNode*&gt; scopeStack_;
+		Scanner::Toker& toker_;}</div>;
+
+	//////////////////////////////////////////////////////////////////////////////////
+	//TypeAnalysis() - Gets the instances of the ScopeStack,Toker and the AST Node //   
+	////////////////////////////////////////////////////////////////////////////////
+	inline TypeAnalysis::TypeAnalysis() :
+		ASTref_(Repository::getInstance()-&gt;AST()),
+		scopeStack_(Repository::getInstance()-&gt;scopeStack()),
+		toker_(*(Repository::getInstance()-&gt;Toker()))
+	{<button onclick = "myFunc14()">+</button><div id = "mydiv14">std::function&lt;void()&gt; test = [] {<button onclick = "myFunc15()">+</button><div id = "mydiv15"> int x; }</div>;}</div>
+
+	inline bool doDisp(ASTNode* pNode)
+	{<button onclick = "myFunc16()">+</button><div id = "mydiv16">	static std::string toDisplay[] = {<button onclick = "myFunc17()">+</button><div id = "mydiv17">
+	   "lambda", "class", "struct", "enum", "alias", "typedef", }</div>;
+		for (std::string type : toDisplay)
+		{<button onclick = "myFunc18()">+</button><div id = "mydiv18">	if (pNode-&gt;type_ == type)
+				return true;}</div>
+		return false;}</div>
+	inline void TypeAnalysis::dfs(ASTNode* pNode, NoSqlDatabaseApp& db)
+	{<button onclick = "myFunc19()">+</button><div id = "mydiv19">	std::vector&lt;std::string&gt; vec;
+		Element typanalele1;
+		static std::string path = "";
+		if (pNode-&gt;path_ != path)
+		{<button onclick = "myFunc20()">+</button><div id = "mydiv20"> path = pNode-&gt;path_;}</div>
+		if (pNode-&gt;type_ == "namespace")
+		{<button onclick = "myFunc21()">+</button><div id = "mydiv21">	stack.push(pNode-&gt;name_);}</div>
+		if (doDisp(pNode))
+		{<button onclick = "myFunc22()">+</button><div id = "mydiv22">  typanalele1.type_name = pNode-&gt;type_;
+			typanalele1.filename = pNode-&gt;package_;
+			if (stack.size() == 0)
+			{<button onclick = "myFunc23()">+</button><div id = "mydiv23"> typanalele1.name_space = "rajesh";}</div>
+			else
+			{<button onclick = "myFunc24()">+</button><div id = "mydiv24">	typanalele1.name_space = stack.top();}</div>
+			db.saveele(pNode-&gt;name_, typanalele1);}</div>
+		if (pNode-&gt;type_ == "namespace"  && pNode-&gt;name_ == "Global Namespace")
+		{<button onclick = "myFunc25()">+</button><div id = "mydiv25">	for (auto pchild : pNode-&gt;children_)
+			{<button onclick = "myFunc26()">+</button><div id = "mydiv26"> if (pchild-&gt;type_ == "function" && pchild-&gt;name_ != "main")
+				{<button onclick = "myFunc27()">+</button><div id = "mydiv27">	typanalele1.type_name = pchild-&gt;type_;
+					typanalele1.filename = pchild-&gt;package_;
+					typanalele1.name_space = pNode-&gt;name_;
+					db.saveele(pchild-&gt;name_, typanalele1);}</div>}</div>}</div>
+		for (auto pChild : pNode-&gt;children_)
+		{<button onclick = "myFunc28()">+</button><div id = "mydiv28">	if (pChild-&gt;parentType_ == "namespace")
+		{<button onclick = "myFunc29()">+</button><div id = "mydiv29">		stack.push(pNode-&gt;name_);	}</div>
+		dfs(pChild, db);
+		if (pChild-&gt;parentType_ == "namespace")
+		{<button onclick = "myFunc30()">+</button><div id = "mydiv30">	stack.pop();}</div>}</div>}</div>
+
+	///////////////////////////////////////////
+	//doTypeAnalysis  performs TypeAnalysis //
+	/////////////////////////////////////////
+	inline void TypeAnalysis::doTypeAnalysis(NoSqlDatabaseApp& db)
+	{<button onclick = "myFunc31()">+</button><div id = "mydiv31">	ASTNode* pRoot = ASTref_.root();
+		dfs(pRoot,db);
+	}</div>}</div>
+
+
+
+
+
+</pre></body></html>

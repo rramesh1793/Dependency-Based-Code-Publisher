@@ -1,0 +1,172 @@
+<html><head> <link rel = "stylesheet" type = "text/css"  href="cssstyle.css"/></head><body><head><script type="text/javascript" src = "jsscript.js"></script></head><pre><br><br><br><a href = "Convert.cpp.htm">Convert.cpp - Convert.cpp.htm</a><br><a href = "GrammarHelpers.cpp.htm">GrammarHelpers.cpp - GrammarHelpers.cpp.htm</a><br><a href = "Tokenizer.h.htm">Tokenizer.h - Tokenizer.h.htm</a><br><a href = "xmlElementParts.h.htm">xmlElementParts.h - xmlElementParts.h.htm</a><br><br><br>/////////////////////////////////////////////////////////////////////
+//  XmlElementParts.cpp - Collects tokens for XML analysis         //
+//  ver 1.3                                                        //
+//                                                                 //
+//  Language:      Visual C++ 2008, SP1                            //
+//  Platform:      Dell Precision T7400, Vista Ultimate SP1        //
+//  Application:   Prototype for CSE687 Pr1, Sp09                  //
+//  Author:        Jim Fawcett, CST 4-187, Syracuse University     //
+//                 (315) 443-3948, jfawcett@twcny.rr.com           //
+/////////////////////////////////////////////////////////////////////
+
+#include &lt;algorithm&gt;
+#include "XmlElementParts.h"
+
+//----&lt; construct XmlParts instance &gt;---------------------------
+
+XmlParts::XmlParts(Toker* pTokr) : pToker(pTokr), Verbose(false)
+{<button onclick = "myFunc1()">+</button><div id = "mydiv1">
+}</div>
+//----&lt; destructor &gt;-------------------------------------------
+
+XmlParts::~XmlParts()
+{<button onclick = "myFunc2()">+</button><div id = "mydiv2">
+}</div>
+//----&lt; is this a terminating token? &gt;-------------------------
+
+bool XmlParts::isTerminator(std::string tok)
+{<button onclick = "myFunc3()">+</button><div id = "mydiv3">
+  if(tok.length() == 0)
+    return false;
+  if(tok == "&gt;")
+    return true;
+  return false;
+}</div>
+//
+//----&lt; collect an XmlElementParts sequence &gt;------------------
+
+bool XmlParts::get()
+{<button onclick = "myFunc4()">+</button><div id = "mydiv4">
+  toks.clear();
+  std::string tok;
+  do
+  {<button onclick = "myFunc5()">+</button><div id = "mydiv5">
+    if(pToker-&gt;isFileEnd())
+    {<button onclick = "myFunc6()">+</button><div id = "mydiv6">
+      if(length() &gt; 0)
+        return true;
+      return false;
+    }</div>
+    tok = pToker-&gt;getTok();
+    if(Verbose)
+    {<button onclick = "myFunc7()">+</button><div id = "mydiv7">
+      if(tok != "\n")
+        std::cout &lt;&lt; "\n--tok=" &lt;&lt; tok &lt;&lt; std::endl;
+      else
+        std::cout &lt;&lt; "\n--tok=newline\n";
+    }</div>
+    if(toks.size() &gt; 0 && tok == "&lt;")
+    {<button onclick = "myFunc8()">+</button><div id = "mydiv8">
+      pToker-&gt;putback('&lt;');
+      break;
+    }</div>
+    if(tok != "\n")
+      toks.push_back(tok);
+  }</div> while(!isTerminator(tok));
+  return true;
+}</div>
+//----&lt; index operator &gt;---------------------------------------
+
+std::string& XmlParts::operator[](int n)
+{<button onclick = "myFunc9()">+</button><div id = "mydiv9">
+  if(n &lt; 0 || toks.size() &lt;= (size_t)n)
+    throw std::exception("XmlParts index out of range");
+  return toks[n];
+}</div>
+//----&lt; collect semi-expression as space-seperated string &gt;----
+
+std::string XmlParts::show()
+{<button onclick = "myFunc10()">+</button><div id = "mydiv10">
+  if(toks.size() == 0)
+    return "";
+  std::string temp(" ");
+  for(size_t i=0; i&lt;toks.size(); ++i)
+    if(toks[i] != "\n")
+      temp.append(" ").append(toks[i]);
+  return temp;
+}</div>
+//
+//----&lt; is tok found in XmlElementParts? &gt;---------------------
+
+int XmlParts::find(const std::string& tok)
+{<button onclick = "myFunc11()">+</button><div id = "mydiv11">
+  for(int i=0; i&lt;length(); ++i)
+    if(tok == toks[i])
+      return i;
+  return length();
+}</div>
+//----&lt; remove tok if found in semi-expression &gt;---------------
+
+bool XmlParts::remove(const std::string& tok)
+{<button onclick = "myFunc12()">+</button><div id = "mydiv12">
+  std::vector&lt;std::string&gt;::iterator it;
+  it = std::find(toks.begin(),toks.end(),tok);
+  if(it != toks.end())
+  {<button onclick = "myFunc13()">+</button><div id = "mydiv13">
+    toks.erase(it);
+    return true;
+  }</div>
+  return false;
+}</div>
+//----&lt; remove leading newlines &gt;------------------------------
+
+void XmlParts::trimFront()
+{<button onclick = "myFunc14()">+</button><div id = "mydiv14">
+  while(toks.size() &gt; 0 && toks[0] == "\n")
+    remove("\n");
+}</div>
+//----&lt; make tokens lowercase &gt;--------------------------------
+
+void XmlParts::toLower()
+{<button onclick = "myFunc15()">+</button><div id = "mydiv15">
+  for(int i=0; i&lt;length(); ++i)
+  {<button onclick = "myFunc16()">+</button><div id = "mydiv16">
+    for(size_t j=0; j&lt;(*this)[i].length(); ++j)
+    {<button onclick = "myFunc17()">+</button><div id = "mydiv17">
+      (*this)[i][j] = tolower((*this)[i][j]);
+    }</div>
+  }</div>
+}</div>
+//
+//----&lt; test stub &gt;--------------------------------------------
+
+#ifdef TEST_XMLELEMENTPARTS
+
+int main(int argc, char* argv[])
+{<button onclick = "myFunc18()">+</button><div id = "mydiv18">
+  std::cout &lt;&lt; "\n  Testing XmlParts class\n "
+            &lt;&lt; std::string(23,'=') &lt;&lt; std::endl;
+  std::cout
+    &lt;&lt; "\n  Note that quotes are returned as single tokens\n\n";
+
+  if(argc &lt; 2)
+  {<button onclick = "myFunc19()">+</button><div id = "mydiv19">
+    std::cout 
+      &lt;&lt; "\n  please enter name of file to process on command line\n\n";
+    return 1;
+  }</div>
+
+  for(int i=1; i&lt;argc; ++i)
+  {<button onclick = "myFunc20()">+</button><div id = "mydiv20">
+    std::cout &lt;&lt; "\n  Processing file " &lt;&lt; argv[i];
+    std::cout &lt;&lt; "\n  " &lt;&lt; std::string(16 + strlen(argv[i]),'-') &lt;&lt; "\n\n";
+    try
+    {<button onclick = "myFunc21()">+</button><div id = "mydiv21">
+      Toker toker(argv[i]);
+      toker.setMode(Toker::xml);
+      XmlParts parts(&toker);
+    //parts.verbose();                 // uncomment to show token details
+      while(parts.get())
+        std::cout &lt;&lt; parts.show().c_str() &lt;&lt; std::endl;
+      std::cout &lt;&lt; "\n\n";
+    }</div>
+    catch(std::exception ex)
+    {<button onclick = "myFunc22()">+</button><div id = "mydiv22">
+      std::cout &lt;&lt; "\n  " &lt;&lt; ex.what() &lt;&lt; "\n\n";
+    }</div>
+  }</div>
+}</div>
+
+#endif
+
+</pre></body></html>
