@@ -1,11 +1,11 @@
+
+(Create a folder Proj3 and transfer all files and folders in the repo before executing run.bat)
+
 Compile:
 devenv CodeAnalyzerEx.sln /rebuild debug
 
-
-(Create a folder Proj3 and transfer all files and folders in the repo before executing run.bat)
 Run:  
-cd x64/Debug/
-TestExecutive.exe ..\..\..\Proj3 *.h *.cpp /f /r 
+cd x64/Debug/TestExecutive.exe ..\..\..\Proj3 *.h *.cpp /f /r 
 
 
 # Dependency-based-Code-Publisher
