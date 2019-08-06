@@ -1,7 +1,5 @@
 # Dependency-based-Code-Publisher
 
-Dependency-Based CodePublisher
-
 Purpose:
 A Code Repository is a Program responsible for managing source code resources, e.g., files and documents. A fully developed Repository will support file persistence, management of versions, and the acquisition and publication of source and document files. This project focuses on just the publishing functionality of a repository.
 In this project we will develop means to display source code files as web pages with embedded child links. Each link refers to a code file that the displayed code file depends on.
