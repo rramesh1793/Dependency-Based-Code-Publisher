@@ -1,3 +1,11 @@
+Compile:
+devenv CodeAnalyzerEx.sln /rebuild debug
+
+Run:
+cd x64/Debug/
+TestExecutive.exe ..\..\..\Proj3 *.h *.cpp /f /r 
+
+
 # Dependency-based-Code-Publisher
 
 Purpose:
